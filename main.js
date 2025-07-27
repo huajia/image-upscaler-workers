@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //=================================================================
     // ▼▼▼ 全局状态变量 ▼▼▼
     //=================================================================
-    const MEMORY_OPTIONS = [0.5, 1.0, 2.0, 4.0];
+    const MEMORY_OPTIONS = [0.5, 1.0, 2.0, 4.0, 6.0, 8.0];
     let originalFile = null;
     let originalImageDimensions = { width: 0, height: 0 };
     let upscalerWorker;
@@ -96,37 +96,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleWorkerMessage(event) {
         const { type, payload } = event.data;
+        if (type !== 'status' || !payload.message.includes('正在加载 AI 核心')) {
+            progressBar.classList.remove('indeterminate');
+            progressBar.style.backgroundColor = '';
+        }
+    
         switch (type) {
             case 'status':
                 statusDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${payload.message}`;
-                if (payload.message.includes('加载') || payload.message.includes('下载') || payload.message.includes('解析')) {
-                    previewOverlay.textContent = payload.message;
+                previewOverlay.style.display = "block";
+                previewOverlay.textContent = payload.message;
+    
+                if (payload.message.includes('正在加载 AI 核心') || payload.message.includes('正在解析')) {
+                    progressBar.classList.add('indeterminate'); 
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '...';
                 }
                 break;
+    
             case 'model_load_progress':
-                const { progress, modelName } = payload;
-                progressBar.style.width = `${progress}%`;
-                progressText.textContent = `${progress}%`;
-                statusDiv.innerHTML = `<i class="fas fa-download"></i> 正在下载AI模型... ${progress}%`;
-                previewOverlay.textContent = `下载模型:(${progress}%)`;
+                progressBar.classList.remove('indeterminate'); 
+                const { progress, loadedBytes, modelName } = payload;
+                previewOverlay.style.display = 'block';
+                if (progress !== undefined) {
+                    progressBar.style.width = `${progress}%`;
+                    progressText.textContent = `${progress}%`;
+                    statusDiv.innerHTML = `<i class="fas fa-download"></i> 正在下载AI模型... ${progress}%`;
+                    previewOverlay.textContent = `下载模型: ${modelName || ''} (${progress}%)`;
+                } else if (loadedBytes !== undefined) {
+                    const loadedMB = (loadedBytes / (1024 * 1024)).toFixed(2);
+                    progressBar.style.width = '100%'; 
+                    progressBar.classList.add('indeterminate'); 
+                    progressText.textContent = `${loadedMB} MB`;
+                    statusDiv.innerHTML = `<i class="fas fa-download"></i> 正在下载AI模型... ${loadedMB} MB`;
+                    previewOverlay.textContent = `下载模型: ${modelName || ''} (${loadedMB} MB)`;
+                }
                 break;
+                
             case 'progress':
+                progressBar.classList.remove('indeterminate');
                 progressBar.style.transition = 'width 0.1s ease-in-out';
                 updateProgress(payload.progress, payload.tile, payload.task);
                 break;
+    
             case 'tile_done':
                 drawTileToCanvas(payload);
                 break;
+    
             case 'all_done':
+                progressBar.classList.remove('indeterminate');
                 resultCanvas.style.backgroundColor = 'transparent';
                 statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> 处理完成！请调整最终尺寸并下载。';
                 previewOverlay.textContent = "处理完成！";
                 downloadBtn.style.display = 'flex';
+                previewOverlay.style.display = "none";
                 initializePostProcessControls();
                 enableControls();
                 break;
+    
             case 'error':
+                progressBar.classList.remove('indeterminate');
                 resultCanvas.style.backgroundColor = 'transparent';
+                previewOverlay.style.display = "none";
                 console.error("Worker Error:", payload);
                 let friendlyMessage = payload.message;
                 if (payload.message.includes('Invalid input shape: {2,2}')) {

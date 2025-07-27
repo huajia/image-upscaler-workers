@@ -78,8 +78,8 @@
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
                     </div>
-                    <p>拖放图片或点击上传</p>
-                    <p class="upload-hint">支持 JPG, PNG, WEBP (最大 10MB)</p>
+                    <p>拖放或点击加载至本地浏览器</p>
+                    <p class="upload-hint">默认图片为自用/有版权</p>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;">
                 </div>
             </div>
@@ -152,7 +152,7 @@
                         <i class="fas fa-memory"></i> 内存策略
                         <span class="value-badge" id="memoryValue">1.0 GB</span>
                     </label>
-                    <input type="range" id="memorySlider" min="0" max="3" step="1" value="1">
+                    <input type="range" id="memorySlider" min="0" max="5" step="1" value="1">
                     <div class="memory-options">
                         <div class="memory-option" data-value="0">
                             <h4>低内存</h4>

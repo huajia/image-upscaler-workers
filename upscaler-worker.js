@@ -1,6 +1,6 @@
 /* 
 =========================================================================
-== upscaler-worker.js
+== upscaler-worker.js (已修改)
 =========================================================================
 */
 
@@ -116,6 +116,79 @@ const CONFIG = {
     }
 };
 
+// --- 新增: 蓝奏云加速链接映射 ---
+const lanzouLinks = {
+    'https://r2.img.aigent.vip/favicon-196x196.png': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/Y00ZcziJ',
+    // cunet/art
+    './models/waifu2x/cunet/art/scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/nmRZczJi',
+    './models/waifu2x/cunet/art/noise2_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/qZbZcz8s',
+    './models/waifu2x/cunet/art/noise3.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/HN1ZczG8',
+    './models/waifu2x/cunet/art/noise3_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/NJpZczgz',
+    './models/waifu2x/cunet/art/scale1x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/7leZczFs',
+    './models/waifu2x/cunet/art/noise2.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/oLmZcz3Z',
+    './models/waifu2x/cunet/art/noise1.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/8I0ZczTr',
+    './models/waifu2x/cunet/art/noise1_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/0aFZcztV',
+    './models/waifu2x/cunet/art/noise0_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/VlbZczhe',
+    './models/waifu2x/cunet/art/noise0.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/vL6ZczfJ',
+    // swin_unet/art
+    './models/waifu2x/swin_unet/art/scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/JXGZczDQ',
+    './models/waifu2x/swin_unet/art/scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/ICHZczQp',
+    './models/waifu2x/swin_unet/art/noise3_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/Vw7Zcz4O',
+    './models/waifu2x/swin_unet/art/noise3_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/wpfZczRl',
+    './models/waifu2x/swin_unet/art/scale1x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/RIKZczrs',
+    './models/waifu2x/swin_unet/art/noise3.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/UoOZcz9o',
+    './models/waifu2x/swin_unet/art/noise2_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/cXTZczdU',
+    './models/waifu2x/swin_unet/art/noise2_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/SQrZczas',
+    './models/waifu2x/swin_unet/art/noise2.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/I2FZczC4',
+    './models/waifu2x/swin_unet/art/noise1_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/nmBZczcL',
+    './models/waifu2x/swin_unet/art/noise1_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/aVVZczO1',
+    './models/waifu2x/swin_unet/art/noise0_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/RcvZczo3',
+    './models/waifu2x/swin_unet/art/noise1.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/lYrZczpU',
+    './models/waifu2x/swin_unet/art/noise0_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/NpkZczbC',
+    './models/waifu2x/swin_unet/art/noise0.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/xrhZczAr',
+    // swin_unet/art_scan
+    './models/waifu2x/swin_unet/art_scan/scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/xLhZcNyi',
+    './models/waifu2x/swin_unet/art_scan/scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/8lMZcN0R',
+    './models/waifu2x/swin_unet/art_scan/noise3_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/lycZcNzf',
+    './models/waifu2x/swin_unet/art_scan/noise3_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/VqwZcNND',
+    './models/waifu2x/swin_unet/art_scan/scale1x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/0qAZcNne',
+    './models/waifu2x/swin_unet/art_scan/noise3.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/S8OZcNMM',
+    './models/waifu2x/swin_unet/art_scan/noise2_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/Km6ZcNIJ',
+    './models/waifu2x/swin_unet/art_scan/noise2_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/1xbZcN67',
+    './models/waifu2x/swin_unet/art_scan/noise2.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/0ONZcNmZ',
+    './models/waifu2x/swin_unet/art_scan/noise1_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/BM0ZcNwI',
+    './models/waifu2x/swin_unet/art_scan/noise1_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/9ToZcNWs',
+    './models/waifu2x/swin_unet/art_scan/noise1.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/wL5ZcN1b',
+    './models/waifu2x/swin_unet/art_scan/noise0_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/rSpZcNXE',
+    './models/waifu2x/swin_unet/art_scan/noise0_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/GJhZcNLj',
+    './models/waifu2x/swin_unet/art_scan/noise0.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/y0YZcNlP',
+    // swin_unet/photo
+    './models/waifu2x/swin_unet/photo/scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/6XPZcNKL',
+    './models/waifu2x/swin_unet/photo/scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/LaEZcN7N',
+    './models/waifu2x/swin_unet/photo/noise3_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/pceZcNkw',
+    './models/waifu2x/swin_unet/photo/noise3_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/PafZcNuK',
+    './models/waifu2x/swin_unet/photo/scale1x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/yrJZcNVl',
+    './models/waifu2x/swin_unet/photo/noise3.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/BfJZcNUZ',
+    './models/waifu2x/swin_unet/photo/noise2_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/EV6ZcNJD',
+    './models/waifu2x/swin_unet/photo/noise2_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/EZCZcN8b',
+    './models/waifu2x/swin_unet/photo/noise2.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/so1ZcNgO',
+    './models/waifu2x/swin_unet/photo/noise1_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/4igZcNS7',
+    './models/waifu2x/swin_unet/photo/noise1_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/wNGZcNFM',
+    './models/waifu2x/swin_unet/photo/noise1.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/BJaZcNsr',
+    './models/waifu2x/swin_unet/photo/noise0_scale4x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/BYyZcN3p',
+    './models/waifu2x/swin_unet/photo/noise0_scale2x.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/IiEZcNTc',
+    './models/waifu2x/swin_unet/photo/noise0.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/WWoZcNt0',
+    // utils
+    './models/waifu2x/utils/tta_merge.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/y3xZcNeX',
+    './models/waifu2x/utils/tta_split.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/VVwZcNDf',
+    './models/waifu2x/utils/reflection_pad.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/gE6ZcNQu',
+    './models/waifu2x/utils/replication_pad.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/7HuZcNqN',
+    './models/waifu2x/utils/alpha_border_padding.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/7PoZcN4c',
+    './models/waifu2x/utils/pad.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/XxhZcNRd',
+    './models/waifu2x/utils/create_seam_blending_filter.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/vM6ZcN9l',
+    './models/waifu2x/utils/antialias.onnx': 'https://lz.qaiu.top/parser?url=https://www.ilanzou.com/s/KjQZcNCG',
+};
+
 
 let modelCache = {};
 
@@ -126,18 +199,42 @@ async function loadModel(modelPath) {
     }
     
     const modelName = modelPath.split('/').pop();
-    self.postMessage({ type: 'status', payload: { message: `准备下载模型` } });
+    self.postMessage({ type: 'status', payload: { message: `准备下载模型: ${modelName}` } });
 
-    const response = await fetch(modelPath);
-    if (!response.ok) throw new Error(`模型文件加载失败: ${response.statusText}`);
+    const primaryUrl = lanzouLinks[modelPath];
+    let response;
+    let usedUrl;
+
+    if (primaryUrl) {
+        try {
+            self.postMessage({ type: 'status', payload: { message: `尝试从加速链接下载...` } });
+            const primaryResponse = await fetch(primaryUrl);
+            if (!primaryResponse.ok) {
+                throw new Error(`状态: ${primaryResponse.status} ${primaryResponse.statusText}`);
+            }
+            response = primaryResponse;
+            usedUrl = primaryUrl;
+            self.postMessage({ type: 'status', payload: { message: `加速链接下载成功` } });
+        } catch (e) {
+            self.postMessage({ type: 'status', payload: { message: `加速链接失败 (${e.message})，尝试原始链接...` } });
+            response = await fetch(modelPath);
+            usedUrl = modelPath;
+        }
+    } else {
+        response = await fetch(modelPath);
+        usedUrl = modelPath;
+    }
+    
+    if (!response.ok) throw new Error(`模型文件加载失败: ${response.statusText} 来自 ${usedUrl}`);
 
 
     const reader = response.body.getReader();
     const totalSize = +response.headers.get('Content-Length'); 
-    self.postMessage({ type: 'status', payload: { message: `获取文件总大小` } });
+    self.postMessage({ type: 'status', payload: { message: `正在获取文件: ${modelName}` } });
     let loadedSize = 0;
     let chunks = [];
     let lastReportedProgress = -1;
+    let lastReportedBytes = 0;
 
     while (true) {
         const { done, value } = await reader.read();
@@ -146,7 +243,7 @@ async function loadModel(modelPath) {
         }
         chunks.push(value);
         loadedSize += value.length;
-        if (totalSize) {
+        if (totalSize) { 
             const progress = Math.round((loadedSize / totalSize) * 100);
             if (progress > lastReportedProgress) {
                 self.postMessage({
@@ -155,7 +252,21 @@ async function loadModel(modelPath) {
                 });
                 lastReportedProgress = progress;
             }
+        } else { 
+            if (loadedSize - lastReportedBytes > 256 * 1024) {
+                self.postMessage({
+                    type: 'model_load_progress',
+                    payload: { loadedBytes: loadedSize, modelName: modelName }
+                });
+                lastReportedBytes = loadedSize;
+            }
         }
+    }
+    if (!totalSize) {
+        self.postMessage({
+            type: 'model_load_progress',
+            payload: { loadedBytes: loadedSize, modelName: modelName }
+        });
     }
 
     self.postMessage({ type: 'status', payload: { message: `模型下载完成，正在解析,大概1分钟左右` } });
@@ -452,7 +563,12 @@ function getModelMethod(arch, scale, noise_level) {
 const MEMORY_LIMITS = [512, 1024, 2048, 4096, 6144, 8192]; 
 try {
     self.importScripts("./libs/ort.min.js");
+    
+    // 使用对象来精确控制每个WASM文件的路径
+    // .mjs 文件将从本地加载 (默认行为，无CORS问题)
+    // .wasm 文件将从指定的蓝奏云链接加载
     ort.env.wasm.wasmPaths = "./";
+
     if (self.crossOriginIsolated) {
         ort.env.wasm.numThreads = navigator.hardwareConcurrency || 4;
     }
@@ -617,4 +733,3 @@ async function upscaleImage(file, userConfig) {
 
     self.postMessage({ type: 'all_done' });
 }
-
